@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DrowsyGuard — Live Monitor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="/Users/macbookpro/Desktop/crop/static/style.css"
+    />
+  </head>
+  <body>
+    <div class="shell">
+      <header>
+        <div class="logo"><span>//</span>DrowsyGuard</div>
+        <div class="header-right">
+          <div class="header-meta">
+            <span id="clock">--:--:--</span>
+            &nbsp;·&nbsp; MODEL: MultiBranch ResNet18 &nbsp;·&nbsp; THRESHOLD:
+            0.60
+          </div>
+          <button id="toggleBtn" class="stopping">■ STOP</button>
+        </div>
+      </header>
+
+      <div class="video-panel">
+        <canvas id="feed"></canvas>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="alert-overlay" id="alertOverlay"></div>
+        <div class="paused-overlay" id="pausedOverlay">
+          <div class="paused-icon">⏸</div>
+          <div class="paused-text">
+            Monitoring paused — press START to resume
+          </div>
+        </div>
+        <div class="status-badge" id="statusBadge">INITIALISING</div>
+      </div>
+
+      <aside class="sidebar">
+        <div class="section-title">Detection</div>
+        <div>
+          <div class="pill" id="facePill">
+            <div class="pill-dot"></div>
+            <span id="faceLabel">No face</span>
+          </div>
+        </div>
+
+        <div class="alert-box" id="alertBox">⬤ &nbsp; SYSTEM NOMINAL</div>
+
+        <div class="sound-row">
+          <span>🔔 &nbsp; Sound Alert</span>
+          <div style="display: flex; align-items: center; gap: 10px">
+            <button
+              id="testSoundBtn"
+              style="
+                font-family: var(--mono);
+                font-size: 0.6rem;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                padding: 4px 10px;
+                border: 1px solid var(--muted);
+                background: transparent;
+                color: var(--muted);
+                cursor: pointer;
+                transition: all 0.2s;
+              "
+            >
+              TEST
+            </button>
+            <label class="toggle-switch">
+              <input type="checkbox" id="soundToggle" checked />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="section-title">Smooth Score</div>
+        <div class="gauge-wrap">
+          <svg class="gauge-arc" viewBox="0 0 200 120" fill="none">
+            <path
+              d="M 20 110 A 90 90 0 0 1 180 110"
+              stroke="#1f2230"
+              stroke-width="12"
+              stroke-linecap="round"
+              fill="none"
+            />
+            <path
+              id="gauge-fill"
+              d="M 20 110 A 90 90 0 0 1 180 110"
+              stroke="#00e5ff"
+              stroke-width="12"
+              stroke-linecap="round"
+              fill="none"
+              stroke-dasharray="283"
+              stroke-dashoffset="283"
+            />
+            <text
+              id="gaugeText"
+              x="100"
+              y="98"
+              text-anchor="middle"
+              font-family="'Share Tech Mono',monospace"
+              font-size="28"
+              fill="#c8cfe8"
+            >
+              0.00
+            </text>
+            <text
+              x="100"
+              y="116"
+              text-anchor="middle"
+              font-family="'Share Tech Mono',monospace"
+              font-size="9"
+              fill="#4a5070"
+              letter-spacing="3"
+            >
+              DROWSY PROB
+            </text>
+          </svg>
+        </div>
+
+        <div class="section-title">Raw Prediction</div>
+        <div class="card">
+          <div class="card-label">Frame Label</div>
+          <div class="card-value" id="rawLabel">–</div>
+        </div>
+
+        <div class="section-title">Probabilities</div>
+        <div class="prob-section">
+          <div class="prob-row">
+            <div class="prob-row-header">
+              <span class="plabel">Awake</span
+              ><span class="pval" id="awakeVal">0.00</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill awake" id="awakeBar"></div>
+            </div>
+          </div>
+          <div class="prob-row">
+            <div class="prob-row-header">
+              <span class="plabel">Drowsy</span
+              ><span class="pval" id="drowsyVal">0.00</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill drowsy" id="drowsyBar"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">Alert Log</div>
+        <div class="log-box" id="logBox">
+          <div class="log-entry">
+            <span class="log-time">--:--:--</span>
+            <span class="log-msg ok">System started</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+  </body>
+</html>
